@@ -62,8 +62,12 @@ private struct DataScannerView<T>: UIViewControllerRepresentable where T: Scanab
             switch item {
             case .text(let text):
                 parent.scanable.value(from: text.transcript)
-            default:
-                break
+            case .barcode(let barcode):
+                if let payload = barcode.payloadStringValue {
+                    parent.scanable.value(from: payload)
+                }
+            @unknown default:
+                break;
             }
         }
     }
