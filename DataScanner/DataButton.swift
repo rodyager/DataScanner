@@ -41,7 +41,7 @@ private struct DataScannerView<T>: UIViewControllerRepresentable where T: Scanab
     
     func makeUIViewController(context: Context) -> DataScannerViewController {
         let viewController = DataScannerViewController(
-            recognizedDataTypes:  scanable.contentTypes(),
+            recognizedDataTypes:  scanable.recognizedDataTypes(),
             isHighlightingEnabled: true
         )
         viewController.delegate = context.coordinator
