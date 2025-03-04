@@ -9,7 +9,7 @@ import VisionKit
 
 protocol Scanable {
     mutating func value(from: String)
-    func contentType( ) -> DataScannerViewController.RecognizedDataType
+    func contentTypes( ) -> [DataScannerViewController.RecognizedDataType]
     func scanFormatted() -> String
 }
 
@@ -22,8 +22,8 @@ extension Date: Scanable {
             }
         }
     }
-    func contentType( ) -> DataScannerViewController.RecognizedDataType {
-        return .text(textContentType: .dateTimeDuration)
+    func contentTypes( ) -> [DataScannerViewController.RecognizedDataType] {
+        return [.text(textContentType: .dateTimeDuration)]
     }
     func scanFormatted() -> String {
         DateFormatter.mediumDate.string(from: self)
@@ -36,8 +36,8 @@ extension Double: Scanable {
             self = value.doubleValue
         }
     }
-    func contentType( ) -> DataScannerViewController.RecognizedDataType {
-        return .text(textContentType: .currency)
+    func contentTypes( ) -> [DataScannerViewController.RecognizedDataType] {
+        return [.text(textContentType: .currency)]
     }
     func scanFormatted() -> String {
         NumberFormatter.currency.string(from: (self as NSNumber) ) ?? ""
