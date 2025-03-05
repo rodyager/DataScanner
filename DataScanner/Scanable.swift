@@ -7,9 +7,20 @@
 
 import VisionKit
 
+/// Adoption of this protocol enables Camea data entry  using a ``DataButton``
 protocol Scanable {
+    
+    /// sets the value using the string detected by the Camera..
+    /// - Parameters:
+    ///   - from: The scanned string.
     mutating func value(from: String)
+    
+    /// determines the categories of objects the Camera will detect
+    /// - Returns: A `Set` of Recognized Data Types
     func recognizedDataTypes() -> Set<DataScannerViewController.RecognizedDataType>
+    
+    /// determines how the value detedted by the Camera will be represented to the user
+    /// - Returns: A suitably formatted string representing the detected value
     func scanFormatted() -> String
 }
 

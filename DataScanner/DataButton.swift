@@ -11,11 +11,23 @@ import VisionKit
 struct DataButton<T>: View  where T: Scanable {
     @Binding var value: T
     @State private var presenting = false
+    /// internal copy of the ``Scanable`` value for use during scanning
+    @State private var scannedValue: T
     
-    init(_ boundValue: Binding<T>) { _value = boundValue }
+    init(_ boundValue: Binding<T>) {
+        _value = boundValue
+        scannedValue = boundValue.wrappedValue
+    }
     
-    private func toggle() { presenting.toggle() }
-    
+    /// toggle presentation of the sheet
+    private func toggle() {
+        presenting.toggle()
+    }
+    /// accept the scanned value and dismiss the sheet
+    private func insert() {
+        value = scannedValue
+        toggle()
+    }
     var body:some View {
         Button(action: toggle) {
             Image(systemName: "text.viewfinder")
@@ -24,10 +36,17 @@ struct DataButton<T>: View  where T: Scanable {
             isPresented: $presenting
         ) {
             VStack{
-                DataScannerView(scanable: $value)
-                Text(value.scanFormatted()).font(.title)
-                Button("Insert", action: toggle )
-                    .buttonStyle(.borderedProminent)
+                DataScannerView(scanable: $scannedValue)
+                Text(scannedValue.scanFormatted()).font(.title)
+                HStack{
+                    Button("Insert", action: insert )
+                        .buttonStyle(.borderedProminent)
+                        .padding(.horizontal, 50)
+                   
+                    Button("Cancel", action: toggle )
+                        .buttonStyle(.bordered)
+                        .padding(.horizontal, 50)
+                }
             }
         }
     }
@@ -58,16 +77,18 @@ private struct DataScannerView<T>: UIViewControllerRepresentable where T: Scanab
             self.parent = parent
         }
         
-        func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-            switch item {
-            case .text(let text):
-                parent.scanable.value(from: text.transcript)
-            case .barcode(let barcode):
-                if let payload = barcode.payloadStringValue {
-                    parent.scanable.value(from: payload)
+        func dataScanner(_ dataScanner: DataScannerViewController, didAdd: [RecognizedItem], allItems: [RecognizedItem]){
+            if let item = didAdd.first {
+                switch item {
+                case .text(let text):
+                    parent.scanable.value(from: text.transcript)
+                case .barcode(let barcode):
+                    if let payload = barcode.payloadStringValue {
+                        parent.scanable.value(from: payload)
+                    }
+                @unknown default:
+                    break;
                 }
-            @unknown default:
-                break;
             }
         }
     }
