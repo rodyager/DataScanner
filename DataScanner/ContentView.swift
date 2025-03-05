@@ -11,6 +11,7 @@ struct ContentView: View {
     
     @State var date = Date()
     @State var amount = 0.0
+    @State var url = URL(string:"https://example.com")!
     var body: some View {
         VStack {
             Form{
@@ -26,6 +27,12 @@ struct ContentView: View {
                         DataButton($date)
                     }
                     HStack{
+                        Text(.init("[\(url)](\(url.absoluteString))"))
+                            .frame(width: 200, alignment: .leading)
+                        Spacer()
+                        DataButton($url)
+                    }
+                    HStack{
                         Text("Amount:")
                         Spacer()
                         TextField("Amount",
@@ -36,10 +43,8 @@ struct ContentView: View {
                         .keyboardType(.numbersAndPunctuation)
                         .padding(.trailing, 10)
                         DataButton($amount)
-                        
                     }
         }
-        
     }
         }
         .padding()
