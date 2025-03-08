@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @State var date = Date()
-    @State var amount = 0.0
+    @State var amount = Currency()
     @State var url = URL(string:"https://example.com")!
     var body: some View {
         VStack {
@@ -36,7 +36,7 @@ struct ContentView: View {
                         Text("Amount:")
                         Spacer()
                         TextField("Amount",
-                                  value: $amount,
+                                  value: $amount.value,
                                   formatter: NumberFormatter.currency
                         )
                         .multilineTextAlignment(.trailing)

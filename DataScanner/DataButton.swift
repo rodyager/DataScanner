@@ -21,6 +21,7 @@ struct DataButton<T>: View  where T: Scanable {
     
     /// toggle presentation of the sheet
     private func toggle() {
+        scannedValue = value  // value may have changed since initialization.
         presenting.toggle()
     }
     /// accept the scanned value and dismiss the sheet

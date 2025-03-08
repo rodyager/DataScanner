@@ -41,17 +41,35 @@ extension Date: Scanable {
     }
 }
 
-extension Double: Scanable {
+struct Currency: Codable  {
+    var value: Double = 0
+    
+    init(_ value: Double = 0) {
+        self.value = value
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.value = try container.decode(Double.self)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
+}
+
+extension Currency: Scanable {
     mutating func value(from string: String) {
         if let value = NumberFormatter.currency.number(from: string) {
-            self = value.doubleValue
+            self.value = value.doubleValue
         }
     }
     func recognizedDataTypes() -> Set<DataScannerViewController.RecognizedDataType> {
         [.text(textContentType: .currency)]
     }
     func scanFormatted() -> String {
-        NumberFormatter.currency.string(from: (self as NSNumber) ) ?? ""
+        NumberFormatter.currency.string(from: (value as NSNumber) ) ?? ""
     }
 }
 
